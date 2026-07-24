@@ -430,13 +430,15 @@
                 }
             }
 
-            const speedMatch = line.match(/([\d\.]+\s*[KMGT]?B\/s)/i);
+            // Extract Speed (e.g. 11.4MB/s, 8.50M/s)
+            const speedMatch = line.match(/([\d\.]+\s*[KMGT]?B?\/s)/i);
             if (speedMatch) {
                 statSpeed.textContent = speedMatch[1];
             }
 
-            const sizeMatch = line.match(/\]\s*([\d\.]+\s*[KMGT]?B)/i);
-            if (sizeMatch) {
+            // Extract Downloaded Size (e.g. 1.92G, 850M)
+            const sizeMatch = line.match(/\]\s*([\d\.]+\s*[KMGT]?B?)\s+/i);
+            if (sizeMatch && sizeMatch[1]) {
                 statDownloaded.textContent = sizeMatch[1];
             }
 
