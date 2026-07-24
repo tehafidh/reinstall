@@ -37,10 +37,15 @@ if not defined id (
 
 :: Configure Adaptive Network Settings for Cloud Providers (Tencent Cloud, DigitalOcean, AWS, Vultr, Linode)
 if defined id (
-    :: Static IP Configuration (Tencent Cloud / Custom Subnets)
     if defined ipv4_addr if defined ipv4_gateway (
         echo [NETCONF] Setting Static IPv4 Address %ipv4_addr% Gateway %ipv4_gateway%...
-        netsh interface ipv4 set address %id% static %ipv4_addr% gateway=%ipv4_gateway% gwmetric=0 >nul 2>&1
+        
+        :: Try PowerShell New-NetIPAddress (Handles CIDR notation like 172.22.0.16/20 natively)
+        powershell -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$ip='%ipv4_addr%'.Split('/')[0]; $prefix=if('%ipv4_addr%'.Contains('/')){ [int]('%ipv4_addr%'.Split('/')[1]) } else { 24 }; New-NetIPAddress -InterfaceIndex %id% -IPAddress $ip -PrefixLength $prefix -DefaultGateway '%ipv4_gateway%' -ErrorAction SilentlyContinue" >nul 2>&1
+        
+        :: Fallback netsh setting if PowerShell New-NetIPAddress was skipped
+        for /f "tokens=1 delims=/" %%i in ("%ipv4_addr%") do set clean_ip=%%i
+        netsh interface ipv4 set address %id% static %clean_ip% gateway=%ipv4_gateway% gwmetric=0 >nul 2>&1
     ) else (
         :: DHCP Configuration (DigitalOcean, AWS, Vultr, Linode)
         echo [NETCONF] Setting DHCP IPv4 Configuration...
