@@ -87,6 +87,7 @@
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -182,6 +183,7 @@
             line-height: 1;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -462,7 +464,7 @@
                 statusText.textContent = 'TERJADI KESALAHAN INSTALASI';
             } else if (text.includes('***** START TRANS *****')) {
                 statusBadge.className = 'status-badge';
-                statusText.textCont = 'STARTING DISK WRITE...';
+                statusText.textContent = 'STARTING DISK WRITE...';
             }
 
             if (isAtBottom) {
