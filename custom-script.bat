@@ -20,13 +20,4 @@ if /i "%username%"=="administrator" (
     net localgroup administrators %username% /add >nul 2>&1
 )
 
-:: 3. Offline VirtIO Driver Installation
-if exist "C:\virtio\*.inf" (
-    echo [VIRTIO] Installing Offline Fedora VirtIO Drivers...
-    pnputil /add-driver C:\virtio\*.inf /subdirs /install
-) else if exist "C:\virtio\virtio-setup.exe" (
-    echo [VIRTIO] Installing VirtIO Guest Tools...
-    start /wait C:\virtio\virtio-setup.exe /passive /norestart
-)
-
 del "%~f0"

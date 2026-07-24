@@ -8500,6 +8500,18 @@ if [ "$hold" = 1 ]; then
     fi
 fi
 
+# Start Webserver Log Viewer Dashboard Port 80
+if ! pidof websocketd >/dev/null 2>&1; then
+    (
+        add_community_repo 2>/dev/null || true
+        apk add websocketd 2>/dev/null || true
+        download "$confhome/logviewer.html" /tmp/index.html 2>/dev/null || true
+        if command -v websocketd >/dev/null 2>&1 && [ -f /tmp/index.html ]; then
+            websocketd --port=80 --staticdir=/tmp cat /reinstall.log 2>/dev/null &
+        fi
+    ) &
+fi
+
 # 正式运行重装
 # shellcheck disable=SC2046,SC2194
 case 1 in

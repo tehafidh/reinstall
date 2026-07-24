@@ -1,157 +1,487 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Reinstall Logs</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haf.id Store - Reinstall Progress Dashboard</title>
+
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        body {
+        :root {
+            --bg-primary: #0a0d14;
+            --bg-card: rgba(18, 24, 38, 0.75);
+            --bg-card-border: rgba(255, 255, 255, 0.08);
+            --accent-primary: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-error: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15) 0%, transparent 45%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header Header */
+        header {
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--bg-card-border);
+            backdrop-filter: blur(12px);
+            background: rgba(10, 13, 20, 0.6);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge.done {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+        }
+
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            box-shadow: 0 0 10px currentColor;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Container Main */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Glass Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Progress Card Header */
+        .progress-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .progress-info-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .progress-percentage {
+            font-family: 'Outfit', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 24px;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Progress Bar Track */
+        .progress-track {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-gradient);
+            border-radius: 9999px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Live Terminal Box */
+        .terminal-card {
+            display: flex;
+            flex-direction: column;
+            height: 480px;
             padding: 0;
             overflow: hidden;
         }
 
-        #log-container {
-            height: calc(100vh);
-            margin: 0;
-            padding: 8px;
-            overflow-y: scroll;
+        .terminal-header {
+            padding: 14px 20px;
+            background: rgba(15, 20, 32, 0.9);
+            border-bottom: 1px solid var(--bg-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        #scroll-to-bottom {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background-color: #0099FF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            display: none;
-            width: 48px;
-            height: 48px;
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
         }
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
 
-        #scroll-to-bottom:hover {
-            background-color: #00CCFF;
+        .terminal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
-        #scroll-to-bottom svg {
-            fill: #fff;
+        #log-container {
+            flex: 1;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: rgba(8, 11, 18, 0.85);
         }
 
-        .done {
-            background-color: #cfc;
+        /* Scrollbar Styling */
+        #log-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #log-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        #log-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        #log-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .error {
-            background-color: #fcc;
+        /* Footer */
+        footer {
+            padding: 20px 32px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--bg-card-border);
         }
     </style>
 </head>
 
 <body>
-    <pre id="log-container"></pre>
-    <button id="scroll-to-bottom">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M5 10l7 7 7-7H5z" />
-        </svg>
-    </button>
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon">HFD</div>
+            <div>
+                <div class="brand-title">Haf.id Store RDP Installer</div>
+                <div class="brand-subtitle">Automated Reinstallation Engine</div>
+            </div>
+        </div>
 
-    <script
-        src="https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"
-        type="application/javascript"></script>
+        <div class="status-badge" id="status-badge">
+            <span class="pulse-dot"></span>
+            <span id="status-text">INITIALIZING NETBOOT...</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Progress Bar Card -->
+        <div class="card">
+            <div class="progress-header">
+                <div>
+                    <div class="progress-info-title">Status Penulisan Disk Image</div>
+                    <div class="progress-percentage" id="progress-percent">0%</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Kecepatan DD</div>
+                        <div class="stat-value" id="stat-speed">-- MB/s</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Terunduh</div>
+                        <div class="stat-value" id="stat-downloaded">0.00 GB</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Estimasi Selesai</div>
+                        <div class="stat-value" id="stat-eta">--:--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Track -->
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Terminal Console Card -->
+        <div class="card terminal-card">
+            <div class="terminal-header">
+                <div class="window-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="terminal-title">live_installation_stream.log</div>
+                <div></div>
+            </div>
+
+            <pre id="log-container">Connecting to Live Web Stream...</pre>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        Haf.id Store RDP Automated Engine &bull; Port 1 &bull; Powered by Alpine Netboot
+    </footer>
+
+    <!-- Reconnecting WebSocket -->
+    <script src="https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
 
     <script>
         const logContainer = document.getElementById('log-container');
-        const scrollToBottomButton = document.getElementById('scroll-to-bottom');
-        let shouldScrollToBottom = true;
+        const progressPercent = document.getElementById('progress-percent');
+        const progressFill = document.getElementById('progress-fill');
+        const statSpeed = document.getElementById('stat-speed');
+        const statDownloaded = document.getElementById('stat-downloaded');
+        const statEta = document.getElementById('stat-eta');
+        const statusBadge = document.getElementById('status-badge');
+        const statusText = document.getElementById('status-text');
 
-        // 缓冲区相关
-        let messageBuffer = [];
-        let flushScheduled = false;
-        const BUFFER_FLUSH_INTERVAL = 100; // 毫秒
-        const BUFFER_MAX_SIZE = 50; // 最大缓冲消息数
-
-        scrollToBottomButton.addEventListener('click', () => {
-            logContainer.scrollTop = logContainer.scrollHeight;
-        });
+        let isAtBottom = true;
 
         logContainer.addEventListener('scroll', () => {
-            const isAtBottom = Math.ceil(logContainer.scrollTop + logContainer.clientHeight) >= logContainer.scrollHeight;
-            if (isAtBottom) {
-                scrollToBottomButton.style.display = 'none';
-            } else {
-                scrollToBottomButton.style.display = 'block';
-            }
-
-            shouldScrollToBottom = isAtBottom;
+            isAtBottom = Math.ceil(logContainer.scrollTop + logContainer.clientHeight) >= logContainer.scrollHeight - 20;
         });
 
-        // 刷新缓冲区到 DOM
-        function flushBuffer() {
-            if (messageBuffer.length === 0) {
-                flushScheduled = false;
-                return;
+        function parseWgetLine(line) {
+            // Match pattern: 38%[======> ] 1.92G 11.4MB/s eta 4m 32s
+            const percentMatch = line.match(/(\d+)%\s*\[.*\]/);
+            if (percentMatch) {
+                const pct = parseInt(percentMatch[1], 10);
+                progressPercent.textContent = pct + '%';
+                progressFill.style.width = pct + '%';
+
+                if (pct > 0 && pct < 100) {
+                    statusBadge.className = 'status-badge';
+                    statusText.textContent = 'MENULIS DISK IMAGE (' + pct + '%)';
+                }
             }
 
-            // 批量更新文本内容
-            const batchText = messageBuffer.join('\n');
-            logContainer.textContent += '\n' + batchText;
-
-            // 检查状态变化（优先级：error > done > start）
-            if (batchText.includes('***** ERROR *****')) {
-                document.body.className = 'error';
-            } else if (batchText.includes('***** DONE *****')) {
-                document.body.className = 'done';
-            } else if (batchText.includes('***** START TRANS *****')) {
-                document.body.className = '';
+            const speedMatch = line.match(/([\d\.]+\s*[KMGT]?B\/s)/i);
+            if (speedMatch) {
+                statSpeed.textContent = speedMatch[1];
             }
 
-            // 自动滚动
-            if (shouldScrollToBottom) {
+            const sizeMatch = line.match(/\]\s*([\d\.]+\s*[KMGT]?B)/i);
+            if (sizeMatch) {
+                statDownloaded.textContent = sizeMatch[1];
+            }
+
+            const etaMatch = line.match(/eta\s*([\w\s]+)/i);
+            if (etaMatch) {
+                statEta.textContent = etaMatch[1].trim();
+            }
+        }
+
+        function appendLog(text) {
+            logContainer.textContent += text + '\n';
+
+            const lines = text.split('\n');
+            lines.forEach(parseWgetLine);
+
+            if (text.includes('***** DONE *****')) {
+                progressPercent.textContent = '100%';
+                progressFill.style.width = '100%';
+                statSpeed.textContent = 'DONE';
+                statEta.textContent = '00:00';
+                statusBadge.className = 'status-badge done';
+                statusText.textContent = 'SELESAI! REBOOTING KE WINDOWS HAF.ID STORE...';
+            } else if (text.includes('***** ERROR *****')) {
+                statusBadge.className = 'status-badge error';
+                statusText.textContent = 'TERJADI KESALAHAN INSTALASI';
+            } else if (text.includes('***** START TRANS *****')) {
+                statusBadge.className = 'status-badge';
+                statusText.textCont = 'STARTING DISK WRITE...';
+            }
+
+            if (isAtBottom) {
                 logContainer.scrollTop = logContainer.scrollHeight;
             }
-
-            // 清空缓冲区
-            messageBuffer = [];
-            flushScheduled = false;
         }
 
-        // 调度刷新
-        function scheduleFlush() {
-            if (!flushScheduled) {
-                flushScheduled = true;
-                requestAnimationFrame(() => {
-                    setTimeout(flushBuffer, BUFFER_FLUSH_INTERVAL);
-                });
-            }
-        }
+        const ws = new ReconnectingWebSocket('ws://' + location.host + '/');
 
-        // 添加消息到缓冲区
-        function bufferMessage(message) {
-            messageBuffer.push(message);
-
-            // 如果缓冲区满了，立即刷新
-            if (messageBuffer.length >= BUFFER_MAX_SIZE) {
-                if (flushScheduled) {
-                    // 取消之前的调度，立即刷新
-                    flushScheduled = false;
-                }
-                flushBuffer();
-            } else {
-                scheduleFlush();
-            }
-        }
-
-        var ws = new ReconnectingWebSocket('ws://' + location.host + '/');
         ws.onopen = function () {
-            bufferMessage('WebSocket Connected.');
+            appendLog('[SYSTEM] WebSocket Live Stream Connected Successfully.');
         };
+
         ws.onclose = function () {
-            bufferMessage('WebSocket Disconnected.');
+            appendLog('[SYSTEM] WebSocket Stream Disconnected.');
         };
+
         ws.onmessage = function (event) {
-            bufferMessage(event.data);
+            appendLog(event.data);
         };
     </script>
 </body>
